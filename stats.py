@@ -3,28 +3,6 @@ from __future__ import division
 from collections import Counter
 from math import fsum
 
-data = '''Region, Alcohol, Tobacco
-North, 6.47, 4.03
-Yorkshire, 6.13, 3.76
-Northeast, 6.19, 3.77
-East Midlands, 4.89, 3.34
-West Midlands, 5.63, 3.47
-East Anglia, 4.52, 2.92
-Southeast, 5.89, 3.20
-Southwest, 4.79, 2.71
-Wales, 5.27, 3.53
-Scotland, 6.08, 4.51
-Northern Ireland, 4.02, 4.56'''.splitlines()
-
-columns = [column.strip() for column in data[0].split(',')]
-
-fns = [str, float, float]
-
-x = [{key: fn(value) for key, fn, value in zip(columns, fns, line.split(','))} for line in data[1:]]
-
-alcohol = [d["Alcohol"] for d in x]
-tobacco = [d["Tobacco"] for d in x]
-
 
 def range(series):
     """
@@ -75,7 +53,32 @@ def stdev(series):
     return (variance(series) ** 0.5) / (len(series) - 1)
 
 
-def main():
+def get_data():
+    data = '''Region, Alcohol, Tobacco
+    North, 6.47, 4.03
+    Yorkshire, 6.13, 3.76
+    Northeast, 6.19, 3.77
+    East Midlands, 4.89, 3.34
+    West Midlands, 5.63, 3.47
+    East Anglia, 4.52, 2.92
+    Southeast, 5.89, 3.20
+    Southwest, 4.79, 2.71
+    Wales, 5.27, 3.53
+    Scotland, 6.08, 4.51
+    Northern Ireland, 4.02, 4.56'''.splitlines()
+
+    columns = [column.strip() for column in data[0].split(',')]
+
+    fns = [str, float, float]
+
+    x = [{key: fn(value) for key, fn, value in zip(columns, fns, line.split(','))} for line in data[1:]]
+
+    alcohol = [d["Alcohol"] for d in x]
+    tobacco = [d["Tobacco"] for d in x]
+    return alcohol, tobacco
+
+
+def main(alcohol, tobacco):
     for name, series in (("alcohol", alcohol), ("tobacco", tobacco)):
         print("The range for {0} is {1} to {2}".format(name, *range(series)))
         print("The mean of {0} is {1}".format(name, mean(series)))
@@ -84,7 +87,9 @@ def main():
         print("The variance of {0} is {1}".format(name, variance(series)))
         print("The standard deviation of {0} is {1}".format(name, stdev(series)))
 
+
 if __name__ == '__main__':
     import doctest
     doctest.testmod()
-    main()
+    alcohol, tobacco = get_data()
+    main(alcohol, tobacco)
