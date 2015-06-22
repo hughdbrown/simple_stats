@@ -1,5 +1,7 @@
 from __future__ import division
+
 from collections import Counter
+from math import fsum
 
 data = '''Region, Alcohol, Tobacco
 North, 6.47, 4.03
@@ -25,28 +27,48 @@ tobacco = [d["Tobacco"] for d in x]
 
 
 def range(series):
+    """
+    >>> range([1, 2, 3, 4, 5, 6])
+    (1, 6)
+    """
     return min(series), max(series)
 
 
 def mean(series):
-    return sum(series) / len(series)
+    """
+    >>> mean([1, 1, 1])
+    1.0
+    >>> mean([1, 2, 3])
+    2.0
+    """
+    return fsum(series) / len(series)
 
 
 def mode(series):
+    """
+    >>> mode([1, 1, 1, 2])
+    1
+    """
     d = Counter(series)
     return d.most_common(1)[0][0]
 
 
 def median(series):
+    """
+    >>> median([1, 2])
+    1.5
+    >>> median([1, 2, 10])
+    2.0
+    """
     n = len(series)
-    start, end = int(n  / 2), int((n + 1) / 2)
-    return sum(series[start:end + 1]) / 2
+    start, end = int((n - 1) / 2), int(n / 2)
+    return fsum(series[start:end + 1]) / (end - start + 1)
 
 
 def variance(series):
     m = mean(series)
     hat_iter = ((s - m) for s in series)
-    return sum(s * s for s in hat_iter)
+    return fsum(s * s for s in hat_iter)
 
 
 def stdev(series):
@@ -63,4 +85,6 @@ def main():
         print("The standard deviation of {0} is {1}".format(name, stdev(series)))
 
 if __name__ == '__main__':
+    import doctest
+    doctest.testmod()
     main()
